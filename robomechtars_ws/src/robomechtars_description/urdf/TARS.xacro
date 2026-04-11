@@ -1,0 +1,786 @@
+<?xml version="1.0"?>
+<robot name="TARS" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ================================================================
+       CHASSIS DIMENSIONS (for reference)
+         box size : 0.6 (L) × 0.4 (W) × 0.2 (H)
+         visual origin z = 0.30
+         → chassis bottom = 0.30 - 0.10 = 0.20
+         → chassis top    = 0.30 + 0.10 = 0.40
+       WHEEL
+         radius = 0.15,  half-length = 0.05
+         wheel joint z  = 0.15  (wheel centre height from base_link origin)
+  ================================================================ -->
+
+  <!-- ================= BASE LINK ================= -->
+  <link name="base_link">
+    <inertial>
+      <mass value="2.0"/>
+      <origin xyz="0 0 0.30"/>
+      <inertia ixx="0.0333" ixy="0" ixz="0"
+               iyy="0.0667" iyz="0"
+               izz="0.0867"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.30"/>
+      <geometry>
+        <box size="0.6 0.4 0.2"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.30"/>
+      <geometry>
+        <box size="0.6 0.4 0.2"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ================= WHEEL LINKS ================= -->
+
+  <!-- FRONT LEFT -->
+  <link name="front_left_wheel">
+    <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.00292" ixy="0" ixz="0"
+               iyy="0.00292" iyz="0"
+               izz="0.00563"/>
+    </inertial>
+    <visual>
+      <origin rpy="1.57 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.1"/>
+      </geometry>
+      <material name="darkgrey">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="1.57 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- FRONT RIGHT -->
+  <link name="front_right_wheel">
+    <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.00292" ixy="0" ixz="0"
+               iyy="0.00292" iyz="0"
+               izz="0.00563"/>
+    </inertial>
+    <visual>
+      <origin rpy="1.57 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.1"/>
+      </geometry>
+      <material name="darkgrey">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="1.57 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- REAR LEFT -->
+  <link name="rear_left_wheel">
+    <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.00292" ixy="0" ixz="0"
+               iyy="0.00292" iyz="0"
+               izz="0.00563"/>
+    </inertial>
+    <visual>
+      <origin rpy="1.57 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.1"/>
+      </geometry>
+      <material name="darkgrey">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="1.57 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- REAR RIGHT -->
+  <link name="rear_right_wheel">
+    <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.00292" ixy="0" ixz="0"
+               iyy="0.00292" iyz="0"
+               izz="0.00563"/>
+    </inertial>
+    <visual>
+      <origin rpy="1.57 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.1"/>
+      </geometry>
+      <material name="darkgrey">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="1.57 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ================================================================
+       SENSOR LINKS
+  ================================================================ -->
+
+  <!-- ── LiDAR ──────────────────────────────────────────────────────
+       Placed at top-centre of chassis for full 360° unobstructed FOV
+  ──────────────────────────────────────────────────────────────── -->
+
+  <link name="lidar_link">
+    <inertial>
+      <mass value="0.35"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.001" ixy="0" ixz="0"
+               iyy="0.001" iyz="0"
+               izz="0.001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.07"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0 0.8 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.04" length="0.07"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ── IMU ────────────────────────────────────────────────────────
+       Placed at chassis centre-of-mass height to minimise vibration
+  ──────────────────────────────────────────────────────────────── -->
+
+  <link name="imu_link">
+    <inertial>
+      <mass value="0.05"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0"
+               iyy="0.0001" iyz="0"
+               izz="0.0001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.04 0.01"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0 0.6 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.04 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ── GPS ────────────────────────────────────────────────────────
+       Placed at rear-top of chassis for maximum open sky exposure
+  ──────────────────────────────────────────────────────────────── -->
+
+  <link name="gps_link">
+    <inertial>
+      <mass value="0.08"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0"
+               iyy="0.0001" iyz="0"
+               izz="0.0001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.06 0.06 0.015"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0 0.6 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.06 0.06 0.015"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ── ZED2 Housing ───────────────────────────────────────────────
+       Placed at front-top of chassis, forward facing
+       172mm wide stereo baseline
+  ──────────────────────────────────────────────────────────────── -->
+
+  <link name="zed2_link">
+    <inertial>
+      <mass value="0.16"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0"
+               iyy="0.0001" iyz="0"
+               izz="0.0001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.03 0.175 0.03"/>
+      </geometry>
+      <material name="silver">
+        <color rgba="0.75 0.75 0.75 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.03 0.175 0.03"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ZED2 left lens (+Y, 60mm from centre) -->
+  <link name="zed2_left_camera_link">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0"
+               iyy="0.00001" iyz="0"
+               izz="0.00001"/>
+    </inertial>
+    <visual>
+      <geometry><sphere radius="0.012"/></geometry>
+      <material name="dark_blue">
+        <color rgba="0 0 0.5 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- ZED2 right lens (-Y, 60mm from centre) -->
+  <link name="zed2_right_camera_link">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0"
+               iyy="0.00001" iyz="0"
+               izz="0.00001"/>
+    </inertial>
+    <visual>
+      <geometry><sphere radius="0.012"/></geometry>
+      <material name="dark_blue">
+        <color rgba="0 0 0.5 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- ── Front Mono Camera ─────────────────────────────────────────
+       Front bumper, mid-height, 10° nose-down
+  ──────────────────────────────────────────────────────────────── -->
+
+  <link name="front_camera_link">
+    <inertial>
+      <mass value="0.05"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0"
+               iyy="0.0001" iyz="0"
+               izz="0.0001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.025 0.06 0.03"/>
+      </geometry>
+      <material name="silver">
+        <color rgba="0.75 0.75 0.75 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.025 0.06 0.03"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ================================================================
+       WHEEL JOINTS
+  ================================================================ -->
+
+  <joint name="front_left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child  link="front_left_wheel"/>
+    <origin xyz="0.25 0.251 0.15"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="1.0" friction="0.5"/>
+    <limit effort="50" velocity="50"/>
+  </joint>
+
+  <joint name="front_right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child  link="front_right_wheel"/>
+    <origin xyz="0.25 -0.251 0.15"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="1.0" friction="0.5"/>
+    <limit effort="50" velocity="50"/>
+  </joint>
+
+  <joint name="rear_left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child  link="rear_left_wheel"/>
+    <origin xyz="-0.25 0.251 0.15"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="1.0" friction="0.5"/>
+    <limit effort="50" velocity="50"/>
+  </joint>
+
+  <joint name="rear_right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child  link="rear_right_wheel"/>
+    <origin xyz="-0.25 -0.251 0.15"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="1.0" friction="0.5"/>
+    <limit effort="50" velocity="50"/>
+  </joint>
+
+  <!-- ================================================================
+       SENSOR JOINTS  (all fixed — sensors don't move)
+  ================================================================ -->
+
+  <!-- LiDAR: top-centre, sits 0.035 above chassis top (half cylinder height) -->
+
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="lidar_link"/>
+    <origin xyz="0 0 0.435" rpy="0 0 0"/>
+  </joint>
+
+  <!-- IMU: chassis centre height — closest to CoM, minimises vibration -->
+
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="imu_link"/>
+    <origin xyz="0 0 0.30" rpy="0 0 0"/>
+  </joint>
+
+  <!-- GPS: rear-top of chassis — maximum sky exposure away from electronics -->
+
+  <joint name="gps_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="gps_link"/>
+    <origin xyz="-0.20 0 0.41" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ZED2 housing: front-top, 5° nose-down for near-ground depth coverage -->
+
+  <joint name="zed2_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="zed2_link"/>
+    <origin xyz="0.28 0 0.42" rpy="0 0.087 0"/>
+  </joint>
+
+  <!-- ZED2 left lens: +60mm in Y from ZED2 housing centre -->
+
+  <joint name="zed2_left_camera_joint" type="fixed">
+    <parent link="zed2_link"/>
+    <child  link="zed2_left_camera_link"/>
+    <origin xyz="0 0.06 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ZED2 right lens: -60mm in Y from ZED2 housing centre -->
+
+  <joint name="zed2_right_camera_joint" type="fixed">
+    <parent link="zed2_link"/>
+    <child  link="zed2_right_camera_link"/>
+    <origin xyz="0 -0.06 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Front camera: front face, mid chassis height, 10° nose-down -->
+
+  <joint name="front_camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="front_camera_link"/>
+    <origin xyz="0.31 0 0.30" rpy="0 0.1745 0"/>
+  </joint>
+
+  <!-- ================================================================
+       GAZEBO — WHEEL COLOURS
+  ================================================================ -->
+
+  <gazebo reference="front_left_wheel">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="front_right_wheel">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="rear_left_wheel">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="rear_right_wheel">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <!-- ================================================================
+       GAZEBO — WHEEL FRICTION / CONTACT
+  ================================================================ -->
+
+  <gazebo reference="front_left_wheel">
+    <collision>
+      <surface>
+        <friction>
+          <ode><mu1>1.0</mu1><mu2>1.0</mu2></ode>
+        </friction>
+        <contact>
+          <ode>
+            <kp>100000.0</kp><kd>10.0</kd>
+            <min_depth>0.001</min_depth><max_vel>0.1</max_vel>
+          </ode>
+        </contact>
+      </surface>
+    </collision>
+  </gazebo>
+
+  <gazebo reference="front_right_wheel">
+    <collision>
+      <surface>
+        <friction>
+          <ode><mu1>1.0</mu1><mu2>1.0</mu2></ode>
+        </friction>
+        <contact>
+          <ode>
+            <kp>100000.0</kp><kd>10.0</kd>
+            <min_depth>0.001</min_depth><max_vel>0.1</max_vel>
+          </ode>
+        </contact>
+      </surface>
+    </collision>
+  </gazebo>
+
+  <gazebo reference="rear_left_wheel">
+    <collision>
+      <surface>
+        <friction>
+          <ode><mu1>1.0</mu1><mu2>1.0</mu2></ode>
+        </friction>
+        <contact>
+          <ode>
+            <kp>100000.0</kp><kd>10.0</kd>
+            <min_depth>0.001</min_depth><max_vel>0.1</max_vel>
+          </ode>
+        </contact>
+      </surface>
+    </collision>
+  </gazebo>
+
+  <gazebo reference="rear_right_wheel">
+    <collision>
+      <surface>
+        <friction>
+          <ode><mu1>1.0</mu1><mu2>1.0</mu2></ode>
+        </friction>
+        <contact>
+          <ode>
+            <kp>100000.0</kp><kd>10.0</kd>
+            <min_depth>0.001</min_depth><max_vel>0.1</max_vel>
+          </ode>
+        </contact>
+      </surface>
+    </collision>
+  </gazebo>
+
+  <!-- ================================================================
+       GAZEBO — LiDAR PLUGIN
+       360° scan, 720 samples, 30 m range → /scan
+  ================================================================ -->
+
+  <gazebo reference="lidar_link">
+    <sensor type="ray" name="lidar_sensor">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <always_on>true</always_on>
+      <update_rate>15</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.10</min>
+          <max>30.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="lidar_plugin" filename="libgazebo_ros_laser.so">
+        <topicName>/scan</topicName>
+        <frameName>lidar_link</frameName>
+      </plugin>
+    </sensor>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+  <!-- ================================================================
+       GAZEBO — IMU PLUGIN
+       200 Hz → /imu/data
+  ================================================================ -->
+
+  <gazebo reference="imu_link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>200</update_rate>
+      <visualize>true</visualize>
+      <imu>
+        <angular_velocity>
+          <x><noise type="gaussian"><mean>0.0</mean><stddev>0.009</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0.0</mean><stddev>0.009</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0.0</mean><stddev>0.009</stddev></noise></z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x><noise type="gaussian"><mean>0.0</mean><stddev>0.021</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0.0</mean><stddev>0.021</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0.0</mean><stddev>0.021</stddev></noise></z>
+        </linear_acceleration>
+      </imu>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>/imu/data</topicName>
+        <bodyName>imu_link</bodyName>
+        <updateRateHZ>200.0</updateRateHZ>
+        <frameName>imu_link</frameName>
+        <initialOrientationAsReference>false</initialOrientationAsReference>
+      </plugin>
+    </sensor>
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+  <!-- ================================================================
+       GAZEBO — GPS PLUGIN
+       10 Hz → /gps/fix
+  ================================================================ -->
+
+  <gazebo reference="gps_link">
+    <sensor type="gps" name="gps_sensor">
+      <always_on>true</always_on>
+      <update_rate>10</update_rate>
+      <gps>
+        <position_sensing>
+          <horizontal>
+            <noise type="gaussian"><mean>0.0</mean><stddev>0.5</stddev></noise>
+          </horizontal>
+          <vertical>
+            <noise type="gaussian"><mean>0.0</mean><stddev>1.0</stddev></noise>
+          </vertical>
+        </position_sensing>
+      </gps>
+      <plugin name="gps_plugin" filename="libgazebo_ros_gps_sensor.so">
+        <robotNamespace>/</robotNamespace>
+        <topicName>/gps/fix</topicName>
+        <velocityTopicName>/gps/vel</velocityTopicName>
+        <frameName>gps_link</frameName>
+        <referenceLatitude>12.9716</referenceLatitude>
+        <referenceLongitude>77.5946</referenceLongitude>
+        <referenceAltitude>920.0</referenceAltitude>
+      </plugin>
+    </sensor>
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+  <!-- ================================================================
+       GAZEBO — ZED2 LEFT CAMERA PLUGIN
+       1280×720 @ 30 Hz → /zed2/left/image_raw
+  ================================================================ -->
+
+  <gazebo reference="zed2_left_camera_link">
+    <sensor type="camera" name="zed2_left">
+      <always_on>true</always_on>
+      <update_rate>30</update_rate>
+      <visualize>false</visualize>
+      <camera name="left">
+        <horizontal_fov>1.8</horizontal_fov>
+        <image>
+          <width>1280</width>
+          <height>720</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip><near>0.02</near><far>300</far></clip>
+        <noise>
+          <type>gaussian</type><mean>0.0</mean><stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="zed2_left_plugin" filename="libgazebo_ros_camera.so">
+        <cameraName>zed2/left</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>zed2_left_camera_link</frameName>
+        <hackBaseline>0.0</hackBaseline>
+      </plugin>
+    </sensor>
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <!-- ================================================================
+       GAZEBO — ZED2 RIGHT CAMERA PLUGIN
+       1280×720 @ 30 Hz → /zed2/right/image_raw
+  ================================================================ -->
+
+  <gazebo reference="zed2_right_camera_link">
+    <sensor type="camera" name="zed2_right">
+      <always_on>true</always_on>
+      <update_rate>30</update_rate>
+      <visualize>false</visualize>
+      <camera name="right">
+        <horizontal_fov>1.8</horizontal_fov>
+        <image>
+          <width>1280</width>
+          <height>720</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip><near>0.02</near><far>300</far></clip>
+        <noise>
+          <type>gaussian</type><mean>0.0</mean><stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="zed2_right_plugin" filename="libgazebo_ros_camera.so">
+        <cameraName>zed2/right</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>zed2_right_camera_link</frameName>
+        <hackBaseline>0.0</hackBaseline>
+      </plugin>
+    </sensor>
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <!-- ================================================================
+       GAZEBO — ZED2 DEPTH + POINT CLOUD PLUGIN
+       640×360 @ 15 Hz → /zed2/depth/depth_registered
+                        → /zed2/point_cloud/cloud_registered
+  ================================================================ -->
+
+  <gazebo reference="zed2_link">
+    <sensor type="depth" name="zed2_depth_sensor">
+      <always_on>true</always_on>
+      <update_rate>15</update_rate>
+      <visualize>false</visualize>
+      <camera name="depth">
+        <horizontal_fov>1.8</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>360</height>
+          <format>R32F</format>
+        </image>
+        <clip><near>0.2</near><far>20.0</far></clip>
+      </camera>
+      <plugin name="zed2_depth_plugin" filename="libgazebo_ros_openni_kinect.so">
+        <robotNamespace>/</robotNamespace>
+        <baseline>0.12</baseline>
+        <alwaysOn>true</alwaysOn>
+        <updateRate>15.0</updateRate>
+        <cameraName>zed2</cameraName>
+        <depthImageTopicName>/zed2/depth/depth_registered</depthImageTopicName>
+        <depthImageInfoTopicName>/zed2/depth/camera_info</depthImageInfoTopicName>
+        <pointCloudTopicName>/zed2/point_cloud/cloud_registered</pointCloudTopicName>
+        <frameName>zed2_left_camera_link</frameName>
+        <pointCloudCutoff>0.2</pointCloudCutoff>
+        <pointCloudCutoffMax>20.0</pointCloudCutoffMax>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- ================================================================
+       GAZEBO — FRONT MONO CAMERA PLUGIN
+       1280×720 @ 30 Hz → /front_camera/image_raw
+  ================================================================ -->
+  <gazebo reference="front_camera_link">
+    <sensor type="camera" name="front_camera">
+      <always_on>true</always_on>
+      <update_rate>30</update_rate>
+      <visualize>false</visualize>
+      <camera name="front_camera">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>1280</width>
+          <height>720</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip><near>0.05</near><far>100</far></clip>
+        <noise>
+          <type>gaussian</type><mean>0.0</mean><stddev>0.005</stddev>
+        </noise>
+      </camera>
+      <plugin name="front_cam_plugin" filename="libgazebo_ros_camera.so">
+        <cameraName>front_camera</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>front_camera_link</frameName>
+        <hackBaseline>0.0</hackBaseline>
+      </plugin>
+    </sensor>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <!-- ================================================================
+       DIFFERENTIAL DRIVE PLUGIN
+       Subscribes : /cmd_vel  →  moves the robot
+       Publishes  : /odom
+  ================================================================ -->
+  <gazebo>
+    <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
+      <ros>
+      	<namespace>/tars</namespace>
+      </ros>
+      <num_wheel_pairs>2</num_wheel_pairs>
+
+      <left_joint>front_left_wheel_joint</left_joint>
+      <left_joint>rear_left_wheel_joint</left_joint>
+      <right_joint>front_right_wheel_joint</right_joint>
+      <right_joint>rear_right_wheel_joint</right_joint>
+
+      <wheel_separation>0.502</wheel_separation>
+      <wheel_diameter>0.30</wheel_diameter>
+
+      <max_wheel_torque>10</max_wheel_torque>
+      <max_wheel_acceleration>1.0</max_wheel_acceleration>
+      
+      <command_topic>cmd_vel</command_topic>
+      <odometry_topic>odom</odometry_topic>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <publish_wheel_tf>false</publish_wheel_tf>
+    </plugin>
+  </gazebo>
+
+</robot>
