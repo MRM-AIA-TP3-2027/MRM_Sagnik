@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>global_planner_pkg</name>
+  <version>1.0.0</version>
+  <description>
+    GPS-to-GPS autonomous global planner for the TARS 4-wheel robot.
+    Traverses from one GPS coordinate to another using IMU heading feedback.
+  </description>
+
+  <maintainer email="journeyvlogger2007@gmail.com">TARS Team</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>gazebo_msgs</depend>
+  <depend>gazebo_ros</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>joint_state_publisher</depend>
+  <depend>xacro</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
